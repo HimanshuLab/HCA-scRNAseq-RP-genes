@@ -11,7 +11,7 @@ library(viridis)
 library(car)
 
 
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
+
 filename <-"SmallIntestine_11_06.rds"
 Tissue_name <- "SI"
 
