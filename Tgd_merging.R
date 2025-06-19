@@ -1,6 +1,6 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS")
 celltype <- "Tgd"
 
+#Input of tissue seurat objects and subsetting the cell type
 seurat <- readRDS("Rectum_06_04.rds")
 Tissue_name <- "Rectum"
 levels(seurat)
@@ -22,8 +22,7 @@ seurat@meta.data$celltype <- Idents(seurat)
 Celltype_SI <- subset(seurat, subset = celltype == "Tgd")
 Celltype_SI$orig.ident <- paste0(Tissue_name,"_",celltype)
 
-
-
+#merging of seurat objects
 merged_seurat <- merge(
   x = Celltype_Marrow,
   y = list(Celltype_Rectum, Celltype_SI),
@@ -31,13 +30,10 @@ merged_seurat <- merge(
 )
 
 table(merged_seurat@meta.data$orig.ident)
-
-
-
-#, Celltype_Muscle,Celltype_Skin, Celltype_Stomach, Celltype_spleen, Celltype_SI, Celltype_Marrow, Celltype_Lymph, Celltype_Blood,
 file_name <- paste0(celltype,"_merged.rds")
 saveRDS(merged_seurat,file_name)
 
+#checking the correctness of cell type
 Idents(merged_seurat) <- merged_seurat@meta.data$orig.ident
 plot1 <- VlnPlot(merged_seurat,features = c("CD3D","CD3E","TRDV1","TRDV2"))
 plot1

@@ -3,9 +3,6 @@ library(Seurat)
 library(monocle3)
 library(dplyr)
 
-
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
-
 seurat <- readRDS("Testis_Adult_05_04.rds")
 
 #subset to spermatogenesis celltypes

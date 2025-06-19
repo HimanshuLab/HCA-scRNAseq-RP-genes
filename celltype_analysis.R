@@ -3,8 +3,6 @@ library(Seurat)
 library(ggplot2)
 library(EnhancedVolcano)
 
-
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/Celltype_RDS")
 seurat <- readRDS("Plasma_merged.rds")
 Idents(seurat) <- seurat@meta.data$orig.ident
 seurat <- SCTransform(seurat)
@@ -96,7 +94,7 @@ if (nrow(subset_markers) == 0) {
   message(paste("Saved subsetted markers to:", filename))
 }
 
-Celltype <- "Muscle_Endothelial"
+Celltype <- "Stomach_plasma"
 markers <- FindMarkers(
   seurat,
   ident.1 = Celltype,   # Change to your cluster/ident
@@ -108,8 +106,8 @@ markers <- FindMarkers(
 markers$gene <- rownames(markers)
 
 #specific tissue volcano plot
-Tissue_name <- "Endothelial"
-name <- paste0("Muscle"," Vs other tissues")
+Tissue_name <- "Plasma"
+name <- paste0("Stomach"," Vs other tissues")
 
 plot <- EnhancedVolcano(
   markers,

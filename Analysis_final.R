@@ -11,7 +11,6 @@ library(viridis)
 library(car)
 
 
-
 filename <-"SmallIntestine_11_06.rds"
 Tissue_name <- "SI"
 
@@ -73,108 +72,11 @@ print(ht)
 dev.off()
 
 #Analysis 2
-#within and between celltype variance
-
-ident_list <- Idents(seurat)
-celltypes <- unique(ident_list)
-a <- length(celltypes)
-celltype_var <- matrix(NA, nrow = length(rpgenes), ncol = a)
-
-#plotting variance alone
-for (i in seq_along(celltypes)) {
-  # Subset the data
-  sub <- subset(seurat, idents = celltypes[i])
-  
-  # Extract the relevant gene expression data
-  mat <- sub[["SCT"]]$data[rpgenes, ] %>% as.matrix()
-  
-  # Calculate variance for each cell
-  variance <- apply(mat, 1, var) %>% as.numeric()
-  celltype_var[, i] <- variance
-}
-
-colnames(celltype_var) <- celltypes
-rownames(celltype_var) <- rpgenes
-
-filename <- paste(Tissue_name, "var_within_celltypes",".csv", sep = "")
-write.csv(celltype_var,filename)
-
-ht1 <- Heatmap(celltype_var, name = paste("RP variance - ",Tissue_name),
-               cluster_columns = FALSE,
-               show_column_dend = TRUE,
-               cluster_row_slices = FALSE,
-               cluster_column_slices = TRUE,
-               column_title_gp = gpar(fontsize = 8),
-               column_gap = unit(0.5, "mm"),
-               cluster_rows = FALSE,
-               show_row_dend = FALSE,
-               col = col_list_variance$variance,
-               row_names_gp = gpar(fontsize = 4),
-               column_title_rot = 90,
-               column_names_rot = 45, 
-               show_column_names = TRUE,
-               use_raster = TRUE,
-               raster_quality = 4)
-
-ht1
-
-celltype_mean <- matrix(NA, nrow = length(rpgenes), ncol = a)
-
-#plotting variance alone
-for (i in seq_along(celltypes)) {
-  # Subset the data
-  sub <- subset(seurat, idents = celltypes[i])
-  
-  # Extract the relevant gene expression data
-  mat <- sub[["SCT"]]$data[rpgenes, ] %>% as.matrix()
-  
-  # Calculate variance for each cell
-  mean <- apply(mat, 1, mean) %>% as.numeric()
-  celltype_mean[, i] <- mean
-}
-
-colnames(celltype_mean) <- celltypes
-rownames(celltype_mean) <- rpgenes
-
-across_cell_variance <- apply(celltype_mean, 1, var) %>% as.numeric()
-exp_matrix<- seurat[["SCT"]]$data[rpgenes, ] %>% as.matrix()
-overall_variance <- apply(exp_matrix, 1, var) %>% as.numeric()
-final_variance_list <- cbind(overall_variance,across_cell_variance,celltype_var)
-
-#Dividing across cell type 
-column_to_divide_by <- final_variance_list[, "overall_variance"]
-
-# Perform the operation: Divide each column by the chosen column and multiply by 100
-new_matrix <- sweep(final_variance_list, 1, column_to_divide_by, FUN = function(x, y) (x / y))
-new_matrix <- new_matrix[,-1]
-
-ht1 <- Heatmap(new_matrix, name = paste("Variance ratio - ",Tissue_name),
-               cluster_columns = FALSE,
-               show_column_dend = TRUE,
-               cluster_row_slices = FALSE,
-               cluster_column_slices = TRUE,
-               column_title_gp = gpar(fontsize = 8),
-               column_gap = unit(0.5, "mm"),
-               cluster_rows = FALSE,
-               show_row_dend = FALSE,
-               col = viridis(150),
-               row_names_gp = gpar(fontsize = 4),
-               column_title_rot = 90,
-               column_names_rot = 90, 
-               show_column_names = TRUE,
-               use_raster = TRUE,
-               raster_quality = 4)
-
-ht1
-
-
-#Analysis 3
 #Differentially expressed genes across patients in the tissues studied when there are multiple patients in the dataset
-
 levels(seurat)
-#seurat <- subset(seurat, subset = celltypes != "unknown" )
 
 #for tissues with multiple donors use this
+#----
 seurat <- PrepSCTFindMarkers(seurat)
 
 
@@ -273,9 +175,11 @@ for (celltype in celltype_list) {
     message("Saved: ", filename)
   }
 }
+#----
 
 # finding DEGs for tissues with single patient
 
+#----
 markers <- FindAllMarkers(
   seurat,
   assay = "SCT",
@@ -298,6 +202,7 @@ write.csv(significant_filtered_markers, filename)
 
 filename <- paste0(Tissue_name,"_RP_markers.csv")
 write.csv(subset_markers, filename)
+#----
 
 #comparing RP genes with ubiquitously expressed genes
 
@@ -331,15 +236,12 @@ genepathway_list <- list(common_dnarepair,common_cellular,common_chromatin_remod
 
 #Identifying IOD of RP genes throughout then tissue
 mat <- seurat[["SCT"]]$data[rpgenes, ] %>% as.matrix()
-
 mean <- apply(mat, 1, mean) %>% as.numeric()
-
 variance <- apply(mat, 1, var) %>% as.numeric()
 final_variance_matrix_UEG <- as.matrix(variance)
 rownames(final_variance_matrix_UEG) <- rpgenes
 var_mat_melt <- melt(final_variance_matrix_UEG)
 var_mat_melt$Var2 <- "RP genes"
-
 IOD <- variance/mean
 IOD_matrix <- as.matrix(IOD)
 finalIOD_matrix_UEG <- IOD_matrix
@@ -360,7 +262,6 @@ for (j in 1:length(genepathway_list)) {
   rownames(var_matrix) <- genelist
   var_mat_melt_j <- melt(var_matrix)
   var_mat_melt_j$Var2 <- list[j]
-  
   IOD <- variance/mean
   IOD_matrix <- as.matrix(IOD)
   rownames(IOD_matrix) <- genelist

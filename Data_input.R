@@ -1,5 +1,4 @@
 library(Seurat)
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/newdata/Testis_infant")
 
 #infant testis
 #when input data is text file
@@ -22,7 +21,6 @@ table(metadata_seurat$ID == rownames(metadata_seurat))
 #check if the order of metadata added is right
 sum(rownames(metadata_seurat) == metadata_seurat$ID) == nrow(metadata_seurat)
 
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/newdata/Testis_Adult")
 
 #Adult testis
 #when input data is text file
@@ -45,7 +43,6 @@ table(metadata_seurat$ID == rownames(metadata_seurat))
 
 
 #GSE222368 
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/newdata/Marrow_222368")
 sceasy::convertFormat("heme_velo_aggr_5exp_211012.h5ad", from="anndata", to="seurat",
                       outFile='GSE222368.rds')
 seurat <- readRDS("GSE222368.rds")
@@ -71,7 +68,6 @@ cat("Number of genes after filtering:", nrow(seurat_filtered@assays$RNA@counts),
 
 #GSE159929 data input
 #blood
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/newdata/GSE159929_tissues")
 data <-read.csv(file = "GSM4850587_Skin_Counts.csv", header = FALSE, sep = ",")
 colnames(data) <- data[1,]
 rownames(data) <- data[,1]
@@ -101,7 +97,7 @@ table(metadata_seurat$ID == rownames(metadata_seurat))
 #check if the order of metadata added is right
 sum(rownames(metadata_seurat) == metadata_seurat$ID) == nrow(metadata_seurat)
 
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/newdata/Testis_Adult")
+
 
 #Adult testis
 #when input data is text file

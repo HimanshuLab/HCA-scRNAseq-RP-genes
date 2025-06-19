@@ -1,13 +1,12 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS")
 celltype <- "Plasma"
 
+#Input of tissue seurat objects and subsetting the cell type
 seurat <- readRDS("esophagous_15_04.rds")
 Tissue_name <- "oesophagus"
 levels(seurat)
 seurat@meta.data$celltype <- Idents(seurat)
 Celltype_eso <- subset(seurat, subset = celltype == "Plasma")
 Celltype_eso$orig.ident <- paste0(Tissue_name,"_",celltype)
-
 
 seurat <- readRDS("Rectum_06_04.rds")
 Tissue_name <- "Rectum"
@@ -58,6 +57,7 @@ seurat@meta.data$celltype <- Idents(seurat)
 Celltype_spleen <- subset(seurat, subset = celltype == "Plasma")
 Celltype_spleen$orig.ident <- paste0(Tissue_name,"_",celltype)
 
+#tissues with less than 100 cells not considered
 merged_seurat <- merge(
   x = Celltype_Stomach,
   y = list(Celltype_Rectum, Celltype_spleen),
@@ -65,13 +65,10 @@ merged_seurat <- merge(
 )
 
 table(merged_seurat@meta.data$orig.ident)
-
-
-
-#, Celltype_Muscle,Celltype_Skin, Celltype_Stomach, Celltype_spleen, Celltype_SI, Celltype_Marrow, Celltype_Lymph, Celltype_Blood,
 file_name <- paste0(celltype,"_merged.rds")
 saveRDS(merged_seurat,file_name)
 
+#checking the correctness of celltype using markers
 merged_seurat <- readRDS("Endothelial_merged.rds")
 Idents(merged_seurat) <- merged_seurat@meta.data$orig.ident
 plot1 <- VlnPlot(merged_seurat,features = c("CD79A","JCHAIN"))

@@ -1,4 +1,3 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
 seurat <- readRDS("testis_cntrl_inf_KS_07_04_recent.rds")
 levels(seurat)
 metadata <- seurat@meta.data
@@ -37,6 +36,7 @@ pseudobulk_counts <- t(pseudobulk)
 patient <- c("Donor1_1","Donor1_2","Donor2_1","Donor2_2","Donor3_1","Donor3_2","I1_1","I1_2","I2_1","K1_1","K1_2")
 condition <- c("Normal","Normal","Normal","Normal","Normal","Normal","Primary Infertility","Primary Infertility","Secondary Infertility","KS","KS")
 
+#for use in the case of studying germ cells in secondary infertility
 # patient <- c("Donor1_1","Donor1_2","Donor2_1","Donor2_2","Donor3_1","Donor3_2","I2_1")
 # condition <- c("Normal","Normal","Normal","Normal","Normal","Normal","Secondary Infertility")
 
@@ -67,7 +67,6 @@ res <- res[order(res$padj), ]
 res <- res[!is.na(res$padj), ]
 
 res
-write.csv(res,"test.csv")
 
 # View the top differentially expressed genes
 head(res)
@@ -87,7 +86,6 @@ rp_filtered <- res_filtered[rownames(res_filtered) %in% rpgenes, ]
 # Save to CSV
 rp_filename <- paste0(celltype, "_", Condition_file, "_Deseq2_RPgenes.csv")
 write.csv(rp_filtered, file = rp_filename)
-
 
 res$gene <- rownames(res)
 res$highlight <- ifelse(res$gene %in% rpgenes, "RP genes", "Other")

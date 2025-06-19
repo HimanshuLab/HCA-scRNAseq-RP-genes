@@ -1,6 +1,6 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS")
 celltype <- "Fibroblast"
 
+#Input of tissue seurat objects and subsetting the cell type
 seurat <- readRDS("Bladder_16_04.rds")
 Tissue_name <- "Bladder"
 levels(seurat)
@@ -68,14 +68,12 @@ merged_seurat <- merge(
 
 table(merged_seurat@meta.data$orig.ident)
 
-
-
-#, Celltype_Muscle,Celltype_Skin, Celltype_Stomach, Celltype_spleen, Celltype_SI, Celltype_Marrow, Celltype_Lymph, Celltype_Blood,
 file_name <- paste0(celltype,"_merged.rds")
 saveRDS(merged_seurat,file_name)
+
+#checking the correctness of celltype using markers
 Idents(merged_seurat) <- merged_seurat@meta.data$orig.ident
 plot1 <- VlnPlot(merged_seurat,features = c("MMP2","DCN"))
-                                            
 plot1
 
 

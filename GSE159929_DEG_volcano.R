@@ -1,7 +1,6 @@
 library(Seurat)
 library(EnhancedVolcano)
 
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
 filename <-"Liver_12_04.rds"
 seurat <- readRDS(filename)
 table(Idents(seurat))

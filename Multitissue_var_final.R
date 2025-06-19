@@ -10,8 +10,6 @@ library(reshape2)
 library(EnhancedVolcano)
 library(circlize)
 
-
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
 rpgenes <- c("RPL23","RPS17","RPL36A","RPS20","RPL27A","RPL31","RPL7","RPL27","RPL4","RPS11","RPL38","RPS29","RPL13A","RPSA","RPL10A","RPL23A","RPS2","RPL21","RPS21","RPL18A","RPL18","RPL12","RPS8","RPS28","RPL41","RPL24","RPL9","RPS16","RPL22","RPL17","RPL14","RPS18","RPL6","RPS3","RPS9","RPL35","RPL3","RPS6","RPL5","RPS5","RPLP0","RPS10","RPS19","RPS25","RPS3A","RPS7","RPL26","RPS14","RPS23","RPL37","RPL36","RPL35A","RPS13","RPS27A","RPS12","RPL11","RPL34","RPS26","RPS15A","RPLP1","RPL37A","RPL15","RPL29","RPL7A","RPLP2","RPL8","RPS24","RPS27","RPL30","RPL32","RPS15","RPL19","RPL13","RPL28","RPL39","RPL10")
 
 seurat <- readRDS("Trachea_14_04.rds")
@@ -285,58 +283,6 @@ df_list_IOD_data <- as.data.frame(df_list_IOD_data)
 df_list_IOD <- as.matrix(df_list_IOD_data)
 write.csv(df_list_IOD_data,"IOD_alltissues.csv")
 
-colnames(variance_blood) <- c("Blood")
-colnames(variance_oesophagus) <- c("Oesophagus")
-colnames(variance_liver) <- c("Liver")
-colnames(variance_lymph) <- c("Lymph")
-colnames(variance_marrow) <- c("Marrow")
-colnames(variance_muscle) <- c("Muscle")
-colnames(variance_bladder) <- c("Bladder")
-colnames(variance_bile) <- c("Bile")
-colnames(variance_rectum) <- c("Rectum")
-colnames(variance_SI) <- c("SmallIntestine")
-colnames(variance_skin) <- c("Skin")
-colnames(variance_stomach) <- c("Stomach")
-colnames(variance_testis1) <- c("Testis")
-colnames(variance_trachea) <- c("Trachea")
-colnames(variance_spleen) <- c("Spleen")
-
-df_list_var <- list(variance_bladder,variance_blood,variance_oesophagus,variance_liver,variance_lymph,variance_marrow,variance_muscle,variance_bile,variance_rectum,variance_SI,variance_skin,variance_stomach,variance_testis1,variance_trachea,variance_spleen) #variance_Skin_130973,
-df_list_var <- as.data.frame(df_list_var)
-df_list_var <- as.matrix(df_list_var)
-
-
-
-var_ht <- Heatmap(df_list_var, name = "IOD",
-        cluster_columns = TRUE,
-        show_column_dend = TRUE,
-        cluster_row_slices = TRUE,
-        cluster_column_slices = TRUE,
-        column_title_gp = gpar(fontsize = 6),
-        column_gap = unit(0.5, "mm"),
-        cluster_rows = FALSE,
-        show_row_dend = TRUE,
-        col = colorRamp2(c(0,0.25,0.5,0.75,1,1.25,1.5,1.75,2), c("black","darkblue","lightskyblue","mistyrose","yellow","orange","darkorange","red","darkred")),
-        row_names_gp = gpar(fontsize = 7),
-        column_title_rot = 90,
-        #top_annotation = HeatmapAnnotation(foo = anno_block(gp = gpar(fill = scales::hue_pal()(9)))), 
-        show_column_names = TRUE,
-        use_raster = TRUE,
-        raster_quality = 4)
-
-var_ht
-file_name <- paste("alltissue_heatmap",".svg", sep = "")
-svg(file_name,width = 10, height = 8)
-print(var_ht)
-dev.off()
-
-file_path <- paste("alltissue_heatmap",".png", sep = "")
-# Open a PNG device with the desired resolution
-png(file = file_path, width = 10, height = 8, units = 'in', res = 600)
-# Print the plot
-print(var_ht)
-# Close the PNG device
-dev.off()
 
 IOD_ht<- Heatmap(df_list_IOD_data, name = "IOD",
         cluster_columns = TRUE,

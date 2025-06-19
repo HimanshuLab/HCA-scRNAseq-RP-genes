@@ -49,18 +49,15 @@ print(p2)
 # Close the PNG device
 dev.off()
 
-#seurat <- JoinLayers(seurat) #use this if this is a merged seurat object
-
-#seurat <- subset(seurat, subset = id %in% c("D1","D2","N1","N2","N3","N4","N5","N6","N7"))
 # spliting the RNA assay based on patient - information present in metadata
 seurat[["RNA"]] <- split(seurat[["RNA"]], f = seurat$id)
 seurat
 
-
-
 options(future.globals.maxSize = 1000 * 1024^2)  # Increase to 1000 MiB (1 GB)
-#SCTransform after split data normalizes each patient data seperatly for the genes based on sequencing depths
+#SCTransform after split data normalizes each patient data separately for the genes based on sequencing depths
 seurat <- SCTransform(seurat, verbose = TRUE)
+
+#vars.to.regress = "percent.mt" was done for tissues with any negative or high positive corrolation of percent.mt with nFeature_RNA
 #seurat <- SCTransform(seurat, vars.to.regress = "percent.mt", verbose = TRUE)
 
 
@@ -163,7 +160,7 @@ plot(p6)
 dev.off()
 
 
-#harmony for batch correction based on patients
+#harmony or CCA for batch correction based on patients
 seurat <- RunHarmony(
   seurat,
   group.by.vars = "id",  # Specify the grouping variable
@@ -177,13 +174,14 @@ seurat <- IntegrateLayers(seurat, method = CCAIntegration,
   verbose = TRUE
 )
 
+#Further clustering after batch correction
 pcs <- 50
 seurat <- FindNeighbors(seurat, reduction = "integrated.cca", dims = 1:pcs)
 seurat <- FindClusters(seurat, resolution = 1.2, cluster.name = "CCA_clusters")
 seurat <- RunUMAP(seurat, reduction = "integrated.cca", dims = 1:pcs, reduction.name = "umap", metric = "euclidean",seed.use = 345 )
-#seurat <- RunTSNE(seurat, reduction = "harmony", dims = 1:pcs, reduction.name = "tsne", metric = "correlation",seed.use = 345, verbose = TRUE)
 seurat
-# #checking different seed s for a different distribution
+
+
 p7 <- DimPlot(seurat, reduction = "umap", group.by = c("CCA_clusters"), label = TRUE) +
   theme(text = element_text(face = "bold"),
         axis.text.x = element_text(angle = 45, hjust = 1, size = 20),
@@ -239,28 +237,21 @@ plot(p9)
 # Close the PNG device
 dev.off()
 
+marker <- "marker_genes" #choose marker genes from TableS4
 
-
-
-
-
-main_markers <- c("MAGEA4","SPO11","ZPBP","TNP1",)
-top <- c("UTF1","DMRT1","MAGEA4","SYCP3","SPAG6", "ZPBP","PRM2","TNP1","CD14","ACTA2","VWF","DLK1")
-
-
-p <- FeaturePlot(seurat, features = Fibro, reduction = "umap", combine = TRUE)
+p <- FeaturePlot(seurat, features = marker, reduction = "umap", combine = TRUE)
 # Replace 'RNA_snn_res.1' with your specific cluster column name in metadata
 p$data$idents <- Idents(seurat)
 # Label clusters on the plot
 plot <- LabelClusters(plot = p, id = "idents")
 plot
 
-vln <- VlnPlot(seurat,features = "KIT")
+vln <- VlnPlot(seurat,features = marker)
 vln
 
 p7
 
-file_path <- paste(Tissue_name, "Fibro",".png", sep = "")
+file_path <- paste(Tissue_name, "markers",".png", sep = "")
 # Open a PNG device with the desired resolution
 png(file = file_path, width = 10, height = 8, units = 'in', res = 600)
 # Print the plot
@@ -268,7 +259,7 @@ plot(plot)
 # Close the PNG device
 dev.off()
 
-file_path <- paste(Tissue_name, "Fibro",".png", sep = "")
+file_path <- paste(Tissue_name, "markers",".png", sep = "")
 # Open a PNG device with the desired resolution
 png(file = file_path, width = 10, height = 8, units = 'in', res = 600)
 # Print the plot
@@ -285,21 +276,16 @@ top50 <- seurat.markers %>%
   group_by(cluster) %>%
   slice_max(order_by = avg_log2FC, n = 50)
 write.csv(top50,"marrow_222_cluster.csv")
-saveRDS(seurat,"Skin_18_04.rds")
 
 markers <- c("CD3D","TSR1","CA1","TFRC","HBG1","NKG7","GZMK","CD3D","CPA3","KIT","HBA1","S100A8","MPO","HBB","TFRC","SPINK2","PLEK","HBB","CDK2","HBA1","CD3D","HBB","C1QB","ELENA","TPSAB1","MZB1","SPINK2","CD79A","ALAD","IGLL2","JCHAIN","THBS1","HBA1","CD86","CD83","IGFS6","CD1C")
 
-# new_idents <- c("Leydig ","Leydig ","Endothelial","Sperm","Sperm","Sperm","Sperm","Leydig ","Spermatids","Macrophage","Leydig ","Primary spermatocyte","Spermatids","Myoid","DS","Primary spermatocyte","Myoid","SSC","NKT","Endothelial","Spermatids","Leydig ","Somatic","Sertoli","Somatic","Leydig ","Somatic")
-# new_idents <- c("Endothelial","Sertoli","Sertoli","Sertoli","Leydig","Leydig","Sertoli","Endothelial","Germ","Macrophage","Endothelial")
-# new_idents <- c("Leydig","Sperm","Sperm","RS","Sperm","Sperm","Sperm","Endothelial","EPS","Macrophage","ES","DS","Myoid","ES","LPS","EPS","SSC","SSC","Sperm","RS","Somatic","Somatic")
 new_idents <- c("Enterocytes","Enterocytes","Enterocytes","CD8T","Enterocytes","Enterocytes","Tuft","Absorptive","Tgammadelta","B","Stem","Macrophage","Plasma","Enteroendocrine","Goblet","Enterocytes","T")
-#new_idents <- c("HSC","LMPP","MEP","GMP_granulocytes","LMPP","LMPP","early erythroid","unknown","late erythroid","early erythroid","CLP","Monocytes","pDC","Basophils","MKI67+ Cells","unknown","pDC","Megakaryocyte 1","ProB","MKI67+ Cells","Megakaryocyte 2","Monocytes","T/NK","MKI67+ Cells","HSC","MKI67+ Cells","T/NK","ProB","MEP","MEP","Basophils1","late erythroid","unknown","Monocytes","unknown")# new_idents <- c("Erythrocytes","Tc","Erythrocytes","Erythrocytes","Erythrocytes","Erythrocytes","Erythrocytes","Erythrocytes","NKT","Erythrocytes","Tc","Mast","ery_pro","Erythrocytes","Macrophage","Erythrocytes","Erythrocytes","Erythrocytes","CLP","unknown","Erythrocytes","Erythrocytes","unknown","Tc","Erythrocytes","Macmono","Neutrophil","Erythrocytes","Dendritic cell","Plasmacytoid Dendritic cells","CLP","Bcell","Erythrocytes","unknown","unknown","Megakaryocytes","Erythrocytes","Plasma","Macrophage")
 names(new_idents) <- levels(seurat)
 seurat <- RenameIdents(seurat, new_idents)
 p10 <- DimPlot(seurat, reduction = "umap", label = TRUE, pt.size = 0.2)
 p10
 
-
 seurat@meta.data$celltypes <- Idents(seurat)
-#seurat<- subset(seurat,subset = celltypes != "unknown" )
+
+#save the processed seurat object
 saveRDS(seurat,"SmallIntestine_11_06.rds")

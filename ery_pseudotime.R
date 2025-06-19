@@ -189,7 +189,6 @@ saveRDS(ery,"erythrocytes_222_n1n2n3d1d2_12_6_noreg.rds")
 
 #pseudotime
 #----
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
 ery <- readRDS("erythrocytes_222_n1n2n3d1d2_12_6_noreg.rds")
 cds <- as.cell_data_set(ery, assay = "SCT")
 cds
@@ -319,7 +318,6 @@ dev.off()
 
 #Input for DPGP
 #----
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS/RDS_files")
 ery <- readRDS("erythrocytes_222_n1n2n3d1d2_16_6_assigned.rds")
 cds <- readRDS("ery_cds_pseudotime_n1n2n3d1d2_16_6.rds")
 pseudotime <- ery@meta.data$pseudotime  # Verify column name[2][4]

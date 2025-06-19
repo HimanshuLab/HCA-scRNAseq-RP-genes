@@ -1,6 +1,6 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS")
 celltype <- "SMC"
 
+#Input of tissue seurat objects and subsetting the cell type
 seurat <- readRDS("Bladder_16_04.rds")
 Tissue_name <- "Bladder"
 levels(seurat)
@@ -57,7 +57,7 @@ seurat@meta.data$celltype <- Idents(seurat)
 Celltype_Trachea <- subset(seurat, subset = celltype == "Smoothmuscle")
 Celltype_Trachea$orig.ident <- paste0(Tissue_name,"_",celltype)
 
-
+#merging of seurat object
 merged_seurat <- merge(
   x = Celltype_Rectum,
   y = list(Celltype_liver, Celltype_Muscle, Celltype_bile,Celltype_bladder,Celltype_eso,Celltype_Skin,Celltype_Trachea),
@@ -66,18 +66,17 @@ merged_seurat <- merge(
 
 table(merged_seurat@meta.data$orig.ident)
 
+#tissues with less than 100 cells not considered
 new_merged_seurat <- merge(
   x = Celltype_Rectum,
   y = list(Celltype_Muscle, Celltype_bladder,Celltype_eso,Celltype_Skin,Celltype_Trachea),
   add.cell.ids = c("Rectum", "Muscle", "Bladder","Oesophagus","Skin","Trachea")
 )
 
-
-#, Celltype_Muscle,Celltype_Skin, Celltype_Stomach, Celltype_spleen, Celltype_SI, Celltype_Marrow, Celltype_Lymph, Celltype_Blood,
 file_name <- paste0(celltype,"_merged.rds")
 saveRDS(new_merged_seurat,file_name)
 
-
+#checking the correctness of cell type
 Idents(new_merged_seurat) <- new_merged_seurat@meta.data$orig.ident
 plot1 <- VlnPlot(new_merged_seurat,features = c("ACTA2","MYL9","TAGLN","MYH11"))
 plot1

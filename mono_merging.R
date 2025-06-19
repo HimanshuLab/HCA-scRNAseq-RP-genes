@@ -1,6 +1,6 @@
-setwd("/Users/aishwaryasharan/Desktop/ScRNA_newanalysis/FinalRDS")
 celltype <- "Monocyte"
 
+#Input of tissue seurat objects and subsetting the cell type
 seurat <- readRDS("Bladder_16_04.rds")
 Tissue_name <- "Bladder"
 levels(seurat)
@@ -58,17 +58,16 @@ merged_seurat <- merge(
 
 table(merged_seurat@meta.data$orig.ident)
 
+#Tissues with less than 100 cells not considered
 new_merged_seurat <- merge(
   x = Celltype_liver,
   y = list(Celltype_bile, Celltype_bladder),
   add.cell.ids = c("Liver","Bile","Bladder")
 )
-
-
-#, Celltype_Muscle,Celltype_Skin, Celltype_Stomach, Celltype_spleen, Celltype_SI, Celltype_Marrow, Celltype_Lymph, Celltype_Blood,
 file_name <- paste0(celltype,"_merged.rds")
 saveRDS(new_merged_seurat,file_name)
 
+#checking the correctness of celltype using markers
 Idents(new_merged_seurat) <- new_merged_seurat@meta.data$orig.ident
 plot1 <- VlnPlot(new_merged_seurat,features = c("C1QA","S100A8","S100A9","S100A12","VCAN"))
 plot1
