@@ -24,6 +24,8 @@ Tissue_name <- "Erythrocytes_222"
 erythro <- readRDS("GSE222_ery_unclustered.rds")
 table(ery@meta.data$predicted_doublet)
 erythro <- subset(erythro, subset = predicted_doublet %in% "FALSE")
+erythro <- subset(erythro, subset = batch %in% c("D1d0a","D1d0b","D1d3b","D1d6a","D1d6b","D2d0a","D2d0b","D2d3b","D2d6a","D2d6b","N1d0a","N1d6a","N2d0a","N2d0b","N2d3b","N2d6a","N2d6b","N3d0b","N3d3b","N3d6b"))
+
 table(erythro@meta.data$batch)
 
 erythro <- JoinLayers(erythro, assay = "RNA")
