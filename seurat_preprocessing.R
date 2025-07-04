@@ -88,7 +88,7 @@ median(seurat@meta.data$nCount_SCT)
 median(seurat@meta.data$nCount_RNA)
 
 
-#nps chosen will be between 20-50. if the elbow shows less that 20 pcs, 20 will be chosen. 
+#nps chosen will be between 20-50. if the elbow shows less that 20 pcs,  50 will be chosen based on variance explained. 
 seurat <- RunPCA(seurat,npcs = 100, verbose = TRUE)
 
 
