@@ -207,7 +207,7 @@ seurat
 
 seurat <- FindNeighbors(seurat, reduction = "harmony", dims = 1:pcs)
 seurat <- FindClusters(seurat, resolution = 1.2, cluster.name = "harmony_clusters")
-seurat <- RunUMAP(seurat, reduction = "harmony", dims = 1:pcs, reduction.name = "umap_harmony", metric = "correlation",seed.use = 345 )
+seurat <- RunUMAP(seurat, reduction = "harmony", dims = 1:pcs, reduction.name = "umap_harmony", metric = "correlation",seed.use = 10 )
 
 # #checking different seed s for a different distribution
 p7 <- DimPlot(seurat, reduction = "umap", group.by = c("CCA_clusters"), label = TRUE) +
