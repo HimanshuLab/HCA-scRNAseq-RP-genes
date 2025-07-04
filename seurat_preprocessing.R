@@ -178,7 +178,7 @@ seurat <- IntegrateLayers(seurat, method = CCAIntegration,
 pcs <- 50
 seurat <- FindNeighbors(seurat, reduction = "integrated.cca", dims = 1:pcs)
 seurat <- FindClusters(seurat, resolution = 1.2, cluster.name = "CCA_clusters")
-seurat <- RunUMAP(seurat, reduction = "integrated.cca", dims = 1:pcs, reduction.name = "umap", metric = "euclidean",seed.use = 345 )
+seurat <- RunUMAP(seurat, reduction = "integrated.cca", dims = 1:pcs, reduction.name = "umap", metric = "euclidean",seed.use = 10 )
 seurat
 
 
